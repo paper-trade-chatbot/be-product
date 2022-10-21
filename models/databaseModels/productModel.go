@@ -17,7 +17,7 @@ const (
 
 type ProductModel struct {
 	ID           uint64          `gorm:"column:id; primary_key"`
-	Type         ProductType     `gorm:"type:enum('ProductType_None','ProductType_Stock','ProductType_Crypto','ProductType_Futures')";"column:type"`
+	Type         ProductType     `gorm:"column:type"`
 	ExchangeCode string          `gorm:"column:exchange_code"`
 	Code         string          `gorm:"column:code"`
 	Name         string          `gorm:"column:name"`

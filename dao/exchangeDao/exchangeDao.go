@@ -3,7 +3,9 @@ package exchangeDao
 import (
 	"errors"
 
+	"github.com/paper-trade-chatbot/be-common/pagination"
 	models "github.com/paper-trade-chatbot/be-product/models/databaseModels"
+	"github.com/paper-trade-chatbot/be-proto/general"
 
 	"gorm.io/gorm"
 )
@@ -64,12 +66,46 @@ func Gets(tx *gorm.DB, query *QueryModel) ([]models.ExchangeModel, error) {
 	return result, nil
 }
 
+func GetsWithPagination(tx *gorm.DB, query *QueryModel, paginate *general.Pagination) ([]models.ExchangeModel, *general.PaginationInfo, error) {
+
+	var rows []models.ExchangeModel
+	var count int64 = 0
+	err := tx.Table(table).
+		Scopes(queryChain(query)).
+		Count(&count).
+		Scopes(paginateChain(paginate)).
+		Scan(&rows).Error
+
+	offset, _ := pagination.GetOffsetAndLimit(paginate)
+	paginationInfo := pagination.SetPaginationDto(paginate.Page, paginate.PageSize, int32(count), int32(offset))
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return []models.ExchangeModel{}, paginationInfo, nil
+	}
+
+	if err != nil {
+		return []models.ExchangeModel{}, nil, err
+	}
+
+	return rows, paginationInfo, nil
+}
+
 func queryChain(query *QueryModel) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		return db.
 			Scopes(codeEqualScope(query.Code)).
 			Scopes(statusEqualScope(query.Status)).
 			Scopes(displayEqualScope(query.Display))
+
+	}
+}
+
+func paginateChain(paginate *general.Pagination) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		offset, limit := pagination.GetOffsetAndLimit(paginate)
+		return db.
+			Scopes(offsetScope(offset)).
+			Scopes(limitScope(limit))
 
 	}
 }
@@ -100,4 +136,22 @@ func displayEqualScope(display int) func(db *gorm.DB) *gorm.DB {
 		return db
 	}
 
+}
+
+func limitScope(limit int) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if limit > 0 {
+			return db.Limit(limit)
+		}
+		return db
+	}
+}
+
+func offsetScope(offset int) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if offset > 0 {
+			return db.Limit(offset)
+		}
+		return db
+	}
 }

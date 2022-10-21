@@ -2,7 +2,7 @@
 -- +migrate Up
 CREATE TABLE `exchange_holiday` (
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `exchange_code` VARCHAR(32) NOT NULL '代號',
+    `exchange_code` VARCHAR(32) NOT NULL COMMENT '代號',
     `name` VARCHAR(32) NOT NULL COMMENT '名稱',
     `date` DATE NOT NULL COMMENT '開始日期',
     `end_date` DATE NULL DEFAULT NULL COMMENT '結束日期',
@@ -18,4 +18,4 @@ CREATE TABLE `exchange_holiday` (
 
 -- +migrate Down
 SET FOREIGN_KEY_CHECKS=0;
-DROP TABLE IF EXISTS `exchange`;
+DROP TABLE IF EXISTS `exchange_holiday`;

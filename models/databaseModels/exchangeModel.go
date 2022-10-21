@@ -7,7 +7,7 @@ import (
 
 type ExchangeModel struct {
 	Code                string        `gorm:"column:code; primary_key"`
-	ProductType         ProductType   `gorm:"type:enum('ProductType_None','ProductType_Stock','ProductType_Crypto','ProductType_Forex','ProductType_Futures')";"column:product_type"`
+	ProductType         ProductType   `gorm:"product_type"`
 	Name                string        `gorm:"column:name"`
 	Status              int           `gorm:"column:status"`          // 1:enabled , 2:disabled
 	Display             int           `gorm:"column:display"`         // 1:enabled , 2:disabled

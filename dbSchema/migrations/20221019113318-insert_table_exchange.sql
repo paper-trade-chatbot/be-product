@@ -18,12 +18,12 @@ INSERT INTO
         `location`)
 VALUES
 	('TEST1',
-    'stock',
+    1,
     'TEST1',
     1,
     1,
     'TW',
-    8,
+    8.0,
     null,
     null,
     '{"startDay":0,"endDay":6}',

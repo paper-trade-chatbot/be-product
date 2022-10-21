@@ -6,7 +6,6 @@ import (
 	"github.com/paper-trade-chatbot/be-common/pagination"
 	models "github.com/paper-trade-chatbot/be-product/models/databaseModels"
 	"github.com/paper-trade-chatbot/be-proto/general"
-	"google.golang.org/genproto/googleapis/cloud/common"
 
 	"gorm.io/gorm"
 )
@@ -15,12 +14,15 @@ const table = "product"
 
 // QueryModel set query condition, used by queryChain()
 type QueryModel struct {
-	productType  []models.ProductType
-	exchangeCode []string
-	Status       int
-	Display      int
-	Offset       int
-	Limit        int
+	ID            uint64
+	ExchangeCode  string
+	Code          string
+	ProductType   []models.ProductType
+	ExchangeCodes []string
+	Status        int
+	Display       int
+	Offset        int
+	Limit         int
 }
 
 // New a row
@@ -73,15 +75,15 @@ func Gets(tx *gorm.DB, query *QueryModel) ([]models.ProductModel, error) {
 func GetsWithPagination(tx *gorm.DB, query *QueryModel, paginate *general.Pagination) ([]models.ProductModel, *general.PaginationInfo, error) {
 
 	var rows []models.ProductModel
-	var count int = 0
+	var count int64 = 0
 	err := tx.Table(table).
 		Scopes(queryChain(query)).
 		Count(&count).
 		Scopes(paginateChain(paginate)).
 		Scan(&rows).Error
 
-	offset, _ := common.GetOffsetAndLimit(paginate)
-	paginationInfo := pagination.SetProductPaginationDto(paginate.Page, paginate.PageSize, count, offset)
+	offset, _ := pagination.GetOffsetAndLimit(paginate)
+	paginationInfo := pagination.SetPaginationDto(paginate.Page, paginate.PageSize, int32(count), int32(offset))
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return []models.ProductModel{}, paginationInfo, nil
@@ -97,8 +99,11 @@ func GetsWithPagination(tx *gorm.DB, query *QueryModel, paginate *general.Pagina
 func queryChain(query *QueryModel) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		return db.
-			Scopes(productTypeInScope(query.productType)).
-			Scopes(exchangeCodeInScope(query.exchangeCode)).
+			Scopes(idEqualScope(query.ID)).
+			Scopes(codeEqualScope(query.Code)).
+			Scopes(exchangeCodeEqualScope(query.ExchangeCode)).
+			Scopes(productTypeInScope(query.ProductType)).
+			Scopes(exchangeCodesInScope(query.ExchangeCodes)).
 			Scopes(statusEqualScope(query.Status)).
 			Scopes(displayEqualScope(query.Display)).
 			Scopes(offsetScope(query.Offset)).
@@ -109,11 +114,38 @@ func queryChain(query *QueryModel) func(db *gorm.DB) *gorm.DB {
 
 func paginateChain(paginate *general.Pagination) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		offset, limit := common.GetOffsetAndLimit(paginate)
+		offset, limit := pagination.GetOffsetAndLimit(paginate)
 		return db.
 			Scopes(offsetScope(offset)).
 			Scopes(limitScope(limit))
 
+	}
+}
+
+func idEqualScope(id uint64) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if id != 0 {
+			return db.Where(table+".id = ?", id)
+		}
+		return db
+	}
+}
+
+func codeEqualScope(code string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if code != "" {
+			return db.Where(table+".code = ?", code)
+		}
+		return db
+	}
+}
+
+func exchangeCodeEqualScope(exchangeCode string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if exchangeCode != "" {
+			return db.Where(table+".exchange_code = ?", exchangeCode)
+		}
+		return db
 	}
 }
 
@@ -126,10 +158,10 @@ func productTypeInScope(productType []models.ProductType) func(db *gorm.DB) *gor
 	}
 }
 
-func exchangeCodeInScope(exchange []string) func(db *gorm.DB) *gorm.DB {
+func exchangeCodesInScope(exchanges []string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		if len(exchange) > 0 {
-			return db.Where(table+".exchange_code = ?", exchange)
+		if len(exchanges) > 0 {
+			return db.Where(table+".exchange_code = ?", exchanges)
 		}
 		return db
 	}

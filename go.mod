@@ -5,6 +5,7 @@ go 1.18
 require (
 	cloud.google.com/go/logging v1.5.0
 	github.com/GoogleCloudPlatform/cloudsql-proxy v1.32.0
+	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-gonic/gin v1.8.1
@@ -15,7 +16,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/jinzhu/gorm v1.9.16
 	github.com/paper-trade-chatbot/be-common v0.0.0-20221019084418-15b49b2e4f01
-	github.com/paper-trade-chatbot/be-proto v0.0.0-20221019070121-8506ee0ffe68
+	github.com/paper-trade-chatbot/be-proto v0.0.0-20221020020904-a9ef0d390acb
 	github.com/tinylib/msgp v1.1.6
 	golang.org/x/net v0.0.0-20221019024206-cb67ada4b0ad
 	google.golang.org/genproto v0.0.0-20221018160656-63c7b68cfc55
