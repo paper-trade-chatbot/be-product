@@ -1,8 +1,9 @@
 
 -- +migrate Up
 CREATE TABLE `product` (
-    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `id` INTEGER UNSIGNED NOT NULL COMMENT 'id',
     `type` TINYINT(4) NOT NULL COMMENT '產品種類 1:stock, 2:crypto, 3:forex, 4:futures',
+    `exchange_id` INTEGER UNSIGNED NOT NULL COMMENT '交易所id',
     `exchange_code` VARCHAR(32) NOT NULL COMMENT '交易所代號',
     `code` VARCHAR(32) NOT NULL COMMENT '代號',
     `name` VARCHAR(32) NOT NULL COMMENT '名稱',
@@ -17,6 +18,7 @@ CREATE TABLE `product` (
 
     PRIMARY KEY (`id`),
     UNIQUE INDEX (`exchange_code`, `code`),
+    FOREIGN KEY (`exchange_id`) REFERENCES exchange(`id`) ON DELETE CASCADE,
     FOREIGN KEY (`exchange_code`) REFERENCES exchange(`code`) ON DELETE CASCADE
 ) AUTO_INCREMENT=1 CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='產品';
 

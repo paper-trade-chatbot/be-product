@@ -3,6 +3,7 @@
 ALTER TABLE `exchange` AUTO_INCREMENT = 1;
 INSERT INTO 
 	`exchange`(
+        `id`,
         `code`,
         `product_type`,
         `name`,
@@ -17,9 +18,27 @@ INSERT INTO
         `daylight_saving`,
         `location`)
 VALUES
-	('TEST1',
+	(
+    '1',
+    'TEST1',
     1,
     'TEST1',
+    1,
+    1,
+    'TW',
+    8.0,
+    null,
+    null,
+    '{"startDay":0,"endDay":6}',
+    '{"trade":[],"stopTrade":[]}',
+    false,
+    'Asia/Taipei'
+    ),
+    (
+    '2',
+    'TWSE',
+    1,
+    'TWSE',
     1,
     1,
     'TW',

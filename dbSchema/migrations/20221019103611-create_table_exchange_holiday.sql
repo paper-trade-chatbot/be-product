@@ -1,8 +1,8 @@
 
 -- +migrate Up
 CREATE TABLE `exchange_holiday` (
-    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `exchange_code` VARCHAR(32) NOT NULL COMMENT '代號',
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `exchange_id` INTEGER UNSIGNED NOT NULL COMMENT '交易所id',
     `name` VARCHAR(32) NOT NULL COMMENT '名稱',
     `date` DATE NOT NULL COMMENT '開始日期',
     `end_date` DATE NULL DEFAULT NULL COMMENT '結束日期',
@@ -11,8 +11,8 @@ CREATE TABLE `exchange_holiday` (
     `half_day_close_time` TIMESTAMP NULL DEFAULT NULL COMMENT '半天假日結束交易時間',
     `memo` VARCHAR(128) NULL DEFAULT NULL COMMENT '備註',
     PRIMARY KEY (`id`),
-    UNIQUE INDEX (`exchange_code`, `date`),
-    FOREIGN KEY (`exchange_code`) REFERENCES exchange(`code`) ON DELETE CASCADE
+    UNIQUE INDEX (`exchange_id`, `date`),
+    FOREIGN KEY (`exchange_id`) REFERENCES exchange(`id`) ON DELETE CASCADE
 ) AUTO_INCREMENT=1 CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='交易所休假日';
 
 

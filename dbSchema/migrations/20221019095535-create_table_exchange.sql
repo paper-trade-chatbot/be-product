@@ -1,6 +1,7 @@
 
 -- +migrate Up
 CREATE TABLE `exchange` (
+    `id` INTEGER UNSIGNED NOT NULL COMMENT 'id',
     `code` VARCHAR(32) NOT NULL COMMENT '代號',
     `product_type` TINYINT(4) NOT NULL COMMENT '產品種類 1:stock, 2:crypto, 3:forex, 4:futures',
     `name` VARCHAR(32) NOT NULL COMMENT '名稱',
@@ -16,8 +17,9 @@ CREATE TABLE `exchange` (
     `location` VARCHAR(32) NOT NULL COMMENT '地區',
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '創建時間',
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新時間',
-    PRIMARY KEY (`code`)
-) AUTO_INCREMENT=1 CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='交易所';
+    PRIMARY KEY (`id`),
+    UNIQUE KEY (`code`)
+) CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='交易所';
 
 
 -- +migrate Down
