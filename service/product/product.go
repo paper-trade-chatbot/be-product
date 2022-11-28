@@ -207,7 +207,7 @@ func (impl *ProductImpl) GetProduct(ctx context.Context, in *product.GetProductR
 		queryModel.ID = uint64(query.Id)
 	case *product.GetProductReq_Code:
 		queryModel.ExchangeCode = query.Code.GetExchangeCode()
-		queryModel.Code = query.Code.GetExchangeCode()
+		queryModel.Code = query.Code.GetProductCode()
 	}
 
 	model, err := productDao.Get(db, queryModel)
