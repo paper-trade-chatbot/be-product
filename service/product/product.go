@@ -6,10 +6,10 @@ import (
 
 	"github.com/asaskevich/govalidator"
 	common "github.com/paper-trade-chatbot/be-common"
+	"github.com/paper-trade-chatbot/be-common/database"
+	"github.com/paper-trade-chatbot/be-common/logging"
 	"github.com/paper-trade-chatbot/be-product/dao/exchangeDao"
 	"github.com/paper-trade-chatbot/be-product/dao/productDao"
-	"github.com/paper-trade-chatbot/be-product/database"
-	"github.com/paper-trade-chatbot/be-product/logging"
 	models "github.com/paper-trade-chatbot/be-product/models/databaseModels"
 	"github.com/paper-trade-chatbot/be-proto/product"
 )
